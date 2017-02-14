@@ -45,7 +45,7 @@ namespace RST
             string[] stringSeparators = new string[] { ":" };
             string[] partsOfMarking = markingStringFromFile.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
 
-            Console.WriteLine("*****************************TEST_OF MARKING_CLASS*****************************");
+            Console.WriteLine("*****************************TEST5_OF MARKING_CLASS*****************************");
             foreach(string elem in partsOfMarking)
             {
                 Console.WriteLine($"{elem} is {Array.IndexOf(partsOfMarking, elem)}");

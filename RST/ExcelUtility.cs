@@ -33,6 +33,24 @@ namespace RST
             }
         }
 
+        public struct SeparatedCellNameStruct
+        {
+            private string letter;
+            private short number;
+
+            public string Letter
+            {
+                get { return this.letter; }
+                set { this.letter = value; }
+            }
+
+            public short Number
+            {
+                get { return this.number; }
+                set { this.number = value; }
+            }
+        }
+
         public static int GetColumnNumber(string name)
         {
             int number = 0;
@@ -50,16 +68,39 @@ namespace RST
         {
             int dividend = columnNumber;
             string columnName = String.Empty;
-            int modulo;
+            int mod;
 
             while (dividend > 0)
             {
-                modulo = (dividend - 1) % 26;
-                columnName = Convert.ToChar(65 + modulo).ToString() + columnName;
-                dividend = (int)((dividend - modulo) / 26);
+                mod = (dividend - 1) % 26;
+                columnName = Convert.ToChar(65 + mod).ToString() + columnName;
+                dividend = (int)((dividend - mod) / 26);
             }
 
             return columnName;
+        }
+
+        public static SeparatedCellNameStruct SeparateCellName(string cell)
+        {
+            SeparatedCellNameStruct separatedCellName = new SeparatedCellNameStruct();
+
+            if (ExcelUtility.CheckData.IsCell(cell))
+            {
+                Regex regex = new Regex(@"(^[A-Z]{1,})([0-9]{1,}$)");
+
+                Match match = regex.Match(cell);
+
+                if (match.Success)
+                {
+                    separatedCellName.Letter = match.Groups[1].Value;
+                    separatedCellName.Number = Convert.ToInt16(match.Groups[2].Value);
+                }
+
+            }
+            else
+                throw new Exceptions.CellNameException($"Аргумент метода {System.Reflection.MethodBase.GetCurrentMethod().Name} не является ячейкой");
+
+            return separatedCellName;
         }
     }
 }

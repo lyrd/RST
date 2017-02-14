@@ -13,250 +13,12 @@ namespace RST
      */ 
     class Program
     {
-        public string ClassName
-        {
-            get
-            {
-                return GetType().Name;
-            }
-        }
-
-        readonly private static string extensionOfErrorLogFile = "txt";
-        readonly private static string nameOfErrorLogFile = "error_log";
-
-        private static SavesIntoFile savesIntoFile = new SavesIntoFile();
-
-        private struct SeparatedCellNameStruct
-        {
-            private string letter;
-            private short number;            
-
-            public string Letter
-            {
-                get { return this.letter; }
-                set { this.letter = value; }
-            }
-
-            public short Number
-            {
-                get { return this.number; }
-                set { this.number = value; }
-            }        
-        }
-
-        private static string GetFormulaWithValues(StringBuilder data, string[] oldInString, double[] valuesForReplace)
-        {
-            for (byte index = 0; index < valuesForReplace.Length; index++)
-            {
-                data.Replace(oldInString[index], valuesForReplace[index].ToString());
-            }
-
-            return data.ToString();
-        }
-
-        private static double ConvertDecimalSeparator(string s)
-        {
-            return Double.Parse(s.Replace(",", "."), System.Globalization.CultureInfo.InvariantCulture);
-        }
-
-        private enum TypeOfFormula
-        {
-            FORMULA_WITH_CONST = 1,
-            FORMULA_WITH_CONST_CELL = 2,
-            FORMULA_WITH_CONST_COEFFICIENT = 3,
-            FORMULA_WITH_CONST_CELL_COEFFICIENT = 4,
-            FORMULA_WITH_CELL = 5,
-            FORMULA_WITH_CELL_COEFFICIENT = 6,
-            FORMULA_WITH_COEFFICIENT = 7
-        }
-
-        private enum TypeOfVariable
-        {
-            CELL = 1,
-            CONST = 2,
-            COEFFICIENT = 3,
-            UNKNOW = -1
-        }
-
-        private enum ErrorCode
-        {
-            UNKNOW_VARIABLE_TYPE = 1302201701,
-            TRY_PARSE_FAILURE = 1302201702
-        }
-
-        private static TypeOfVariable[] GetTypesOfVariables(string[] variablesInFormula)
-        {
-            TypeOfVariable[] flag = new TypeOfVariable[variablesInFormula.Length];
-
-            for (int i = 0; i < variablesInFormula.Length; i++)
-            {
-                if (ExcelUtility.CheckData.IsCell(variablesInFormula[i]))
-                    flag[i] = TypeOfVariable.CELL;         
-                else if (ExcelUtility.CheckData.IsCoefficients(variablesInFormula[i]))
-                    flag[i] = TypeOfVariable.COEFFICIENT;
-                else if (ExcelUtility.CheckData.IsNumber(variablesInFormula[i]))
-                    flag[i] = TypeOfVariable.CONST;
-                else
-                    flag[i] = TypeOfVariable.UNKNOW;
-            }
-
-            return flag;
-        }
-
-        private static string MakeCalculation(string formula)
-        {
-            //Получение имени текущего метода для вывода в логи
-            string currMethodName = System.Reflection.MethodBase.GetCurrentMethod().Name;
-
-            MathParser mathParser = new MathParser();
-            bool isRadians = false;
-
-            //Сепараторы для парсинга формулы
-            string[] stringSeparators = new string[] { "+", "-", "/", "*", "(", ")" };
-
-            //Временный массив для хранения распарсенной формулы
-            string[] variablesTemp = formula.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
-
-            //Получение типов переменных формулы
-            TypeOfVariable[] typeOfVariables = GetTypesOfVariables(variablesTemp);
-
-            //Массив для значений переменных
-            double[] values = new double[variablesTemp.Length];
-
-            /*В соответствии с типом переменной для неё выполняются соответсвующе действия:
-             * для TypeOfVariable.CELL значение считывается из соответствующей ячейки
-             * для TypeOfVariable.COEFFICIENT подставляется расчитанное знчение коэффициента
-             * для TypeOfVariable.CONST значение берется из массива переменных, которое передеется как аргумент в этот метод
-             * тип TypeOfVariable.UNKNOW присваивается всем переменным, которые не попали ни под один другой тип, например, из-за опечатки в формуле */
-            for (int i = 0; i < variablesTemp.Length; i++)
-            {
-                if(typeOfVariables[i] == TypeOfVariable.CELL)
-                {
-                    //TODO: Read from Excel
-                    //BUT for test this values are 1
-                    values[i] = 1;
-                }
-                else if (typeOfVariables[i] == TypeOfVariable.COEFFICIENT)
-                {
-                    //TODO: Insert calculated coefficient
-                    //BUT for test this values are 2
-                    values[i] = 2;
-                }
-                else if (typeOfVariables[i] == TypeOfVariable.CONST)
-                {
-                    double tempVarForConstantTryParse = 0;
-                    Double.TryParse(variablesTemp[i], out tempVarForConstantTryParse);
-                    values[i] = tempVarForConstantTryParse;
-                }
-                else if (typeOfVariables[i] == TypeOfVariable.UNKNOW)
-                {                                       
-                    values[i] = (int)ErrorCode.UNKNOW_VARIABLE_TYPE;
-                    savesIntoFile.SaveIntoFile($"Ошибка в формуле {formula}: {variablesTemp[i]} имеет тип {typeOfVariables[i]}. Значению в формуле было присвоено {(int)ErrorCode.UNKNOW_VARIABLE_TYPE}", DateTime.Now.ToString("yyyyMMdd.HHmmss"), extensionOfErrorLogFile, false);
-                }
-            }
-
-            //Строка, содержащая формулу, содержащая значения вместо имен ячеек. Должна высчитыватся в парсере математических выражений
-            string formulaWithValues = GetFormulaWithValues(new StringBuilder(formula, formula.Length * 2), variablesTemp, values);
-
-            double dResult = mathParser.Parse(formulaWithValues, isRadians);
-            string sResult = Math.Round(dResult, 2).ToString();
-
-            return sResult;        
-        }
-
-        private static string TEST_MakeCalculation(string formula, string source)
-        {
-            //Получение имени текущего метода для вывода в логи
-            string currMethodName = System.Reflection.MethodBase.GetCurrentMethod().Name;
-
-            MathParser mathParser = new MathParser();
-            bool isRadians = false;
-
-            //Сепараторы для парсинга формулы
-            string[] stringSeparators = new string[] { "+", "-", "/", "*", "(", ")" };
-
-            //Временный массив для хранения распарсенной формулы
-            string[] variablesTemp = formula.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
-
-            //Получение типов переменных формулы
-            TypeOfVariable[] typeOfVariables = GetTypesOfVariables(variablesTemp);
-
-            //Массив для значений переменных
-            double[] values = new double[variablesTemp.Length];
-
-            /*В соответствии с типом переменной для неё выполняются соответсвующе действия:
-             * для TypeOfVariable.CELL значение считывается из соответствующей ячейки
-             * для TypeOfVariable.COEFFICIENT подставляется расчитанное знчение коэффициента
-             * для TypeOfVariable.CONST значение берется из массива переменных, которое передеется как аргумент в этот метод
-             * тип TypeOfVariable.UNKNOW присваивается всем переменным, которые не попали ни под один другой тип, например, из-за опечатки в формуле */
-            for (int i = 0; i < variablesTemp.Length; i++)
-            {
-                if (typeOfVariables[i] == TypeOfVariable.CELL)
-                {
-                    //TODO: Read from Excel
-                    //BUT for test this values are 1
-                    values[i] = 1;
-                }
-                else if (typeOfVariables[i] == TypeOfVariable.COEFFICIENT)
-                {
-                    //TODO: Insert calculated coefficient
-                    //BUT for test this values are 2
-                    values[i] = 2;
-                }
-                else if (typeOfVariables[i] == TypeOfVariable.CONST)
-                {
-                    double tempVarForConstantTryParse = 0;
-                    if (Double.TryParse(variablesTemp[i], out tempVarForConstantTryParse))
-                        values[i] = tempVarForConstantTryParse;
-                    else
-                    {
-                        values[i] = ConvertDecimalSeparator(variablesTemp[i]);
-                    }
-                }
-                else if (typeOfVariables[i] == TypeOfVariable.UNKNOW)
-                {
-                    values[i] = (int)ErrorCode.UNKNOW_VARIABLE_TYPE;
-                    //savesIntoFile.SaveIntoFile($"Ошибка в формуле \"{formula}\": \"{variablesTemp[i]}\" имеет тип {typeOfVariables[i]}. Значению в формуле было присвоено {(int)ErrorCode.UNKNOW_VARIABLE_TYPE}", DateTime.Now.ToString("yyyyMMdd.HHmmss"), extensionOfErroeLogFile, false);
-                    savesIntoFile.SaveIntoFile($"{DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss")}\r\n{currMethodName}\r\nОшибка в формуле \"{formula}\": \"{variablesTemp[i]}\" имеет тип {typeOfVariables[i]}. Значению в формуле было присвоено {(int)ErrorCode.UNKNOW_VARIABLE_TYPE}\r\n", nameOfErrorLogFile, extensionOfErrorLogFile, true);
-                }
-            }
-
-            //Строка, содержащая формулу, содержащая значения вместо имен ячеек. Должна высчитыватся в парсере математических выражений
-            string formulaWithValues = GetFormulaWithValues(new StringBuilder(formula, formula.Length * 2), variablesTemp, values);
-
-            double dResult = mathParser.Parse(formulaWithValues, isRadians);
-            string sResult = Math.Round(dResult, 2).ToString();
-
-            return sResult;
-        }
-
-        private static SeparatedCellNameStruct SeparateCellName(string cell)
-        {
-            SeparatedCellNameStruct separatedCellName = new SeparatedCellNameStruct();
-
-            if (ExcelUtility.CheckData.IsCell(cell))
-            {
-                Regex regex = new Regex(@"(^[A-Z]{1,})([0-9]{1,}$)");
-
-                Match match = regex.Match(cell);
-
-                if(match.Success)
-                {
-                    separatedCellName.Letter = match.Groups[1].Value;
-                    separatedCellName.Number = Convert.ToInt16(match.Groups[2].Value);
-                }
-
-            }
-            else
-                throw new System.FormatException();
-
-            return separatedCellName;
-        }
+        private static MainLogic mainLogic = new MainLogic();
 
         static void Main(string[] args)
         {
             //string result = MakeCalculation("A1+A2");
-            string result = MakeCalculation("1,047");
+            string result = mainLogic.MakeCalculation("1,047");
             Console.WriteLine(result);
 
             //string startRange = "A3";
@@ -286,7 +48,7 @@ namespace RST
 
                 try
                 {
-                    dTest1 = ConvertDecimalSeparator(sTest1);
+                    dTest1 = mainLogic.ConvertDecimalSeparator(sTest1);
                     Console.WriteLine($"dTest1={dTest1} //catch");
                 }
                 catch (System.FormatException)
@@ -316,7 +78,7 @@ namespace RST
             ////Временный массив для хранения распарсенной формулы
             string[] variablesTemp = formula.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
 
-            TypeOfVariable[] typeOfVar = GetTypesOfVariables(variablesTemp);
+            MainLogic.TypeOfVariable[] typeOfVar = MainLogic.GetTypesOfVariables(variablesTemp);
 
             Console.WriteLine($"\r\n{formula}\r\n-----------\r\nElement\tType");
             for (int i = 0; i < variablesTemp.Length; i++)
@@ -327,9 +89,9 @@ namespace RST
             //savesIntoFile.SaveIntoFile(TypeOfVariable.UNKNOW.ToString(), DateTime.Now.ToString("yyyyMMdd.HHmmss"), "err", false);
             string currMethodName = System.Reflection.MethodBase.GetCurrentMethod().Name;
             //Console.WriteLine(currMethodName + "\t" + this.GetType().Name);
-            Console.WriteLine((int)ErrorCode.UNKNOW_VARIABLE_TYPE);
+            Console.WriteLine((int)MainLogic.ErrorCode.UNKNOW_VARIABLE_TYPE);
 
-            Console.WriteLine($"TEST_MakeCalculation(A1 + A2 + 1,25 + 45.7447 + coeffK1) = { TEST_MakeCalculation("A1+A2+1,25+45.7а447+coeffK1", "")}");
+            Console.WriteLine($"TEST_MakeCalculation(A1 + A2 + 1,25 + 45.7447 + coeffK1) = { mainLogic.TEST_MakeCalculation("A1+A2+1,25+45.74.47+coeffK1", "")}");
 
             string test4 = "A1+A2+1,25+45,7447+coeffK1";
             string[] stringSeparators1 = new string[] { "+", "-", "/", "*", "(", ")" };
@@ -347,9 +109,16 @@ namespace RST
             string test6 = "BD132:К:K115/1000*K1*K3:Смета ТС/const*coeffK1*coeffK3";
             Marking marking = new Marking(test6);
 
-            string cellForTest = "A1A";
+            string cellForTest = "AB12";
             Console.WriteLine($"{cellForTest} is cell: {ExcelUtility.CheckData.IsCell(cellForTest)}");
-            Console.WriteLine($"{SeparateCellName(cellForTest).Letter} {SeparateCellName(cellForTest).Number}");
+            try
+            {
+                Console.WriteLine($"Letter: {ExcelUtility.SeparateCellName(cellForTest).Letter}\r\nNumber: {ExcelUtility.SeparateCellName(cellForTest).Number}");
+            }
+            catch ( Exceptions.CellNameException cellEx )
+            {
+                Console.WriteLine(cellEx.Message + "\r\n" + cellEx.StackTrace);
+            }
         }
     }
 }

@@ -10,12 +10,12 @@ namespace RST
     class Exceptions
     {
         [Serializable]
-        public class FileException : Exception
+        public class CellNameException : Exception
         {
-            public FileException() { }
-            public FileException(string message) : base(message) { }
-            public FileException(string message, Exception ex) : base(message) { }
-            protected FileException(SerializationInfo info, StreamingContext context) : base(info, context) { }
+            public CellNameException() { }
+            public CellNameException(string message) : base(message) { }
+            public CellNameException(string message, Exception ex) : base(message) { }
+            protected CellNameException(SerializationInfo info, StreamingContext context) : base(info, context) { }
         }
     }
 }
