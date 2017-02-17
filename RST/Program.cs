@@ -18,8 +18,8 @@ namespace RST
         static void Main(string[] args)
         {
             //string result = MakeCalculation("A1+A2");
-            string result = mainLogic.MakeCalculation("1,047");
-            Console.WriteLine(result);
+            //string result = mainLogic.MakeCalculation("1,047");
+            //Console.WriteLine(result);
 
             //string startRange = "A3";
             //string endRange = "D6";
@@ -30,8 +30,8 @@ namespace RST
             string a = "125,01";
             string b = "125.01";
 
-            Console.WriteLine($"{a} is number: {ExcelUtility.CheckData.IsNumber(a)}");
-            Console.WriteLine($"{b} is number: {ExcelUtility.CheckData.IsNumber(b)}");
+            //Console.WriteLine($"{a} is number: {ExcelUtility.CheckData.IsNumber(a)}");
+            //Console.WriteLine($"{b} is number: {ExcelUtility.CheckData.IsNumber(b)}");
 
             #region FormatException
             double dTest1 = 0;
@@ -40,37 +40,37 @@ namespace RST
             try
             {
                 dTest1 = Double.Parse(sTest1); //SystemFormat.Exception
-                Console.WriteLine($"dTest1={dTest1} //try");
+                //Console.WriteLine($"dTest1={dTest1} //try");
             }
             catch (System.FormatException)
             {
-                Console.WriteLine("FormatException");
+                //Console.WriteLine("FormatException");
 
                 try
                 {
                     dTest1 = mainLogic.ConvertDecimalSeparator(sTest1);
-                    Console.WriteLine($"dTest1={dTest1} //catch");
+                    //Console.WriteLine($"dTest1={dTest1} //catch");
                 }
                 catch (System.FormatException)
                 {
-                    Console.WriteLine($"Parse Double Failure. {sTest1} is NaN");
+                    //Console.WriteLine($"Parse Double Failure. {sTest1} is NaN");
                 }
             }
             #endregion
 
             string sTest2 = "coeffK1";
-            Console.WriteLine($"{sTest2} is coefficient: {ExcelUtility.CheckData.IsCoefficients(sTest2)}");
+           // Console.WriteLine($"{sTest2} is coefficient: {ExcelUtility.CheckData.IsCoefficients(sTest2)}");
 
             string[] sTest3 = { "A1", "AA1", "AA11", "AB1", "AB11", "11", "11AB" };
 
             foreach(string elem in sTest3)
             {
-                Console.WriteLine($"{elem} is cell: {ExcelUtility.CheckData.IsCell(elem)}");
+                //Console.WriteLine($"{elem} is cell: {ExcelUtility.CheckData.IsCell(elem)}");
             }
 
             string formula = "1,1/1.1/M20/coeffK1/1q1/M20000/coefK1/coeff K1/M20";
-            Console.WriteLine($"{formula} is coefficient: {ExcelUtility.CheckData.IsCoefficients(formula)}");
-            Console.WriteLine($"{formula} is cell: {ExcelUtility.CheckData.IsCell(formula)}");
+            //Console.WriteLine($"{formula} is coefficient: {ExcelUtility.CheckData.IsCoefficients(formula)}");
+            //Console.WriteLine($"{formula} is cell: {ExcelUtility.CheckData.IsCell(formula)}");
 
             ////Сепараторы для парсинга формулы
             string[] stringSeparators = new string[] { "+", "-", "/", "*", "(", ")" };
@@ -80,45 +80,54 @@ namespace RST
 
             MainLogic.TypeOfVariable[] typeOfVar = MainLogic.GetTypesOfVariables(variablesTemp);
 
-            Console.WriteLine($"\r\n{formula}\r\n-----------\r\nElement\tType");
+            //Console.WriteLine($"\r\n{formula}\r\n-----------\r\nElement\tType");
             for (int i = 0; i < variablesTemp.Length; i++)
             {
-                Console.WriteLine($"{variablesTemp[i]}\t{typeOfVar[i]}");
+                //Console.WriteLine($"{variablesTemp[i]}\t{typeOfVar[i]}");
             }
 
             //savesIntoFile.SaveIntoFile(TypeOfVariable.UNKNOW.ToString(), DateTime.Now.ToString("yyyyMMdd.HHmmss"), "err", false);
             string currMethodName = System.Reflection.MethodBase.GetCurrentMethod().Name;
             //Console.WriteLine(currMethodName + "\t" + this.GetType().Name);
-            Console.WriteLine((int)MainLogic.ErrorCode.UNKNOW_VARIABLE_TYPE);
+            //Console.WriteLine((int)MainLogic.ErrorCode.UNKNOW_VARIABLE_TYPE);
 
-            Console.WriteLine($"TEST_MakeCalculation(A1 + A2 + 1,25 + 45.7447 + coeffK1) = { mainLogic.TEST_MakeCalculation("A1+A2+1,25+45.74.47+coeffK1", "")}");
+            //Console.WriteLine($"TEST_MakeCalculation(A1 + A2 + 1,25 + 45.7447 + coeffK1) = { mainLogic.TEST_MakeCalculation("A1+A2+1,25+45.74.47+coeffK1", "")}");
 
             string test4 = "A1+A2+1,25+45,7447+coeffK1";
             string[] stringSeparators1 = new string[] { "+", "-", "/", "*", "(", ")" };
             string[] variablesTemp1 = test4.Split(stringSeparators1, StringSplitOptions.RemoveEmptyEntries);
             //string[] variablesTemp = test4.Split(stringSeparators, StringSplitOptions.None);
-            Console.WriteLine($"***************************************************");
-            foreach (string elem in variablesTemp1)
-                Console.WriteLine($"{elem} {Array.IndexOf(variablesTemp1, elem)}");
+            //Console.WriteLine($"***************************************************");
+            //foreach (string elem in variablesTemp1)
+            //    Console.WriteLine($"{elem} {Array.IndexOf(variablesTemp1, elem)}");
 
             string test5 = " sefgerher ";
-            Console.WriteLine($"_{test5}_");
+            //Console.WriteLine($"_{test5}_");
             test5 = test5.Trim();
-            Console.WriteLine($"_{test5}_");
+            //Console.WriteLine($"_{test5}_");
 
-            string test6 = "BD132:К:K115/1000*K1*K3:Смета ТС/const*coeffK1*coeffK3";
-            Marking marking = new Marking(test6);
+            //Console.WriteLine("*****************MARKING_TEST***********************");
+            //string test6 = "BD132:К:K115/1000*K1*K3:Смета ТС/const*coeffK1*coeffK3";
+            //GetMarkingTurple marking = new GetMarkingTurple(test6);
+            //Console.WriteLine($"{test6}\r\nTarget Cell: {marking.TargetCell}\r\nTaget Sheet: {marking.TargetSheet}\r\nSource Cell: {marking.SourceCell}\r\nSource Sheet: {marking.SourceSheet}");
 
-            string cellForTest = "AB12";
-            Console.WriteLine($"{cellForTest} is cell: {ExcelUtility.CheckData.IsCell(cellForTest)}");
-            try
-            {
-                Console.WriteLine($"Letter: {ExcelUtility.SeparateCellName(cellForTest).Letter}\r\nNumber: {ExcelUtility.SeparateCellName(cellForTest).Number}");
-            }
-            catch ( Exceptions.CellNameException cellEx )
-            {
-                Console.WriteLine(cellEx.Message + "\r\n" + cellEx.StackTrace);
-            }
+            //string cellForTest = "AB12";
+            //Console.WriteLine($"{cellForTest} is cell: {ExcelUtility.CheckData.IsCell(cellForTest)}");
+            //try
+            //{
+            //    Console.WriteLine($"Letter: {ExcelUtility.GetSeparatedCellName(cellForTest).Letter}\r\nNumber: {ExcelUtility.GetSeparatedCellName(cellForTest).Number}");
+            //}
+            //catch ( Exceptions.CellNameException cellEx )
+            //{
+            //    Console.WriteLine(cellEx.Message + "\r\n" + cellEx.StackTrace);
+            //}
+
+            WorkWithMarkingFile workWithMarkingFile = new WorkWithMarkingFile();
+            //workWithMarkingFile.GetListOfMarkings();
+
+            //Console.WriteLine(workWithMarkingFile.GetListOfMarkings()[13].SourceCell);
+
+            Console.WriteLine(mainLogic.TEST_MakeCalculation(workWithMarkingFile.GetListOfMarkings()[13].SourceCell, ""));
         }
     }
 }

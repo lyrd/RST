@@ -33,10 +33,10 @@ namespace RST
             }
         }
 
-        public struct SeparatedCellNameStruct
+        public struct SeparatedCellName
         {
             private string letter;
-            private short number;
+            private int number;
 
             public string Letter
             {
@@ -44,7 +44,7 @@ namespace RST
                 set { this.letter = value; }
             }
 
-            public short Number
+            public int Number
             {
                 get { return this.number; }
                 set { this.number = value; }
@@ -80,9 +80,9 @@ namespace RST
             return columnName;
         }
 
-        public static SeparatedCellNameStruct SeparateCellName(string cell)
+        public static SeparatedCellName GetSeparatedCellName(string cell)
         {
-            SeparatedCellNameStruct separatedCellName = new SeparatedCellNameStruct();
+            SeparatedCellName separatedCellName = new SeparatedCellName();
 
             if (ExcelUtility.CheckData.IsCell(cell))
             {

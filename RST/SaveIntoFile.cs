@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace RST
 {
-    class SavesIntoFile
+    static class SavesIntoFile
     {
-        public void SaveIntoFile(string content, string name, bool append)
+        static public void SaveIntoFile(string content, string name, bool append)
         {
             using (StreamWriter str = new StreamWriter(name + ".txt", append))
             {
@@ -17,7 +17,7 @@ namespace RST
             }
         }
 
-        public void SaveIntoFile(string content, string name, string fileExtension, bool append)
+        static public void SaveIntoFile(string content, string name, string fileExtension, bool append)
         {
             using (StreamWriter str = new StreamWriter(name + $".{fileExtension}", append))
             {
@@ -25,7 +25,7 @@ namespace RST
             }
         }
 
-        public void SaveIntoFile<T>(T[] array, string name)
+        static public void SaveIntoFile<T>(T[] array, string name)
         {
             using (StreamWriter str = new StreamWriter(name + ".txt", true))
             {

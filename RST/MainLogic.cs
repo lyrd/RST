@@ -11,10 +11,7 @@ namespace RST
     {
         public MainLogic(){}
 
-        private SavesIntoFile savesIntoFile = new SavesIntoFile();
         private MathParser mathParser = new MathParser();
-        readonly private string extensionOfErrorLogFile = "txt";
-        readonly private string nameOfErrorLogFile = "error_log";
 
         private enum Delta
         {
@@ -84,7 +81,6 @@ namespace RST
             //Получение имени текущего метода для вывода в логи
             string currMethodName = System.Reflection.MethodBase.GetCurrentMethod().Name;
 
-            MathParser mathParser = new MathParser();
             bool isRadians = false;
 
             //Сепараторы для парсинга формулы
@@ -93,7 +89,7 @@ namespace RST
             //Временный массив для хранения распарсенной формулы
             string[] variablesTemp = formula.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
 
-            //Получение типов переменных формулы            
+            //Получение типов переменных формулы
             TypeOfVariable[] typeOfVariables = GetTypesOfVariables(variablesTemp);
 
             //Массив для значений переменных
@@ -121,13 +117,17 @@ namespace RST
                 else if (typeOfVariables[i] == TypeOfVariable.CONST)
                 {
                     double tempVarForConstantTryParse = 0;
-                    Double.TryParse(variablesTemp[i], out tempVarForConstantTryParse);
-                    values[i] = tempVarForConstantTryParse;
+                    if (Double.TryParse(variablesTemp[i], out tempVarForConstantTryParse))
+                        values[i] = tempVarForConstantTryParse;
+                    else
+                    {
+                        values[i] = ConvertDecimalSeparator(variablesTemp[i]);
+                    }
                 }
                 else if (typeOfVariables[i] == TypeOfVariable.UNKNOW)
                 {
                     values[i] = (int)ErrorCode.UNKNOW_VARIABLE_TYPE;
-                    savesIntoFile.SaveIntoFile($"Ошибка в формуле {formula}: {variablesTemp[i]} имеет тип {typeOfVariables[i]}. Значению в формуле было присвоено {(int)ErrorCode.UNKNOW_VARIABLE_TYPE}", DateTime.Now.ToString("yyyyMMdd.HHmmss"), extensionOfErrorLogFile, false);
+                    SavesIntoFile.SaveIntoFile($"{DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss")}\r\n{currMethodName}\r\nОшибка в формуле \"{formula}\": \"{variablesTemp[i]}\" имеет тип {typeOfVariables[i]}. Значению в формуле было присвоено {(int)ErrorCode.UNKNOW_VARIABLE_TYPE}\r\n", Constants.nameOfErrorLogFile, Constants.extensionOfErrorLogFile, true);
                 }
             }
 
@@ -190,9 +190,8 @@ namespace RST
                 }
                 else if (typeOfVariables[i] == TypeOfVariable.UNKNOW)
                 {
-                    values[i] = (int)ErrorCode.UNKNOW_VARIABLE_TYPE;
-                    //savesIntoFile.SaveIntoFile($"Ошибка в формуле \"{formula}\": \"{variablesTemp[i]}\" имеет тип {typeOfVariables[i]}. Значению в формуле было присвоено {(int)ErrorCode.UNKNOW_VARIABLE_TYPE}", DateTime.Now.ToString("yyyyMMdd.HHmmss"), extensionOfErroeLogFile, false);
-                    savesIntoFile.SaveIntoFile($"{DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss")}\r\n{currMethodName}\r\nОшибка в формуле \"{formula}\": \"{variablesTemp[i]}\" имеет тип {typeOfVariables[i]}. Значению в формуле было присвоено {(int)ErrorCode.UNKNOW_VARIABLE_TYPE}\r\n", nameOfErrorLogFile, extensionOfErrorLogFile, true);
+                    values[i] = (int)ErrorCode.UNKNOW_VARIABLE_TYPE;                    
+                    SavesIntoFile.SaveIntoFile($"{DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss")}\r\n{currMethodName}\r\nОшибка в формуле \"{formula}\": \"{variablesTemp[i]}\" имеет тип {typeOfVariables[i]}. Значению в формуле было присвоено {(int)ErrorCode.UNKNOW_VARIABLE_TYPE}\r\n", Constants.nameOfErrorLogFile, Constants.extensionOfErrorLogFile, true);
                 }
             }
 
