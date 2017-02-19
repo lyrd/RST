@@ -35,6 +35,42 @@ namespace RST
 
         }
 
+        private enum TypeOfExpression
+        {
+            FORMULA = 1,
+            LIST_OF_SOURCES = 2
+        }
+
+        //private string ConvertExpressionWithPercent(string expressionForConvert)
+        //{
+        //    //string pattern = @"([A-Z]{0,}[0-9]{1,})([*+-/])([A-Z]{0,}[0-9]{1,})([%])";
+        //    string pattern = @"([A-zА-я0-9\s]{0,})([/*+-])([A-zА-я0-9\s]{0,})([%])";
+        //    string replacement = "$1$2($1*$3/100)";
+
+        //    return expressionForConvert = System.Text.RegularExpressions.Regex.Replace(expressionForConvert, pattern, replacement);
+        //}
+
+        private string ConvertExpressionWithPercent(string expressionForConvert, TypeOfExpression type)
+        {
+            string pattern = String.Empty;
+            string replacement = String.Empty;
+
+            pattern = @"([A-zА-я0-9\s]{0,})([/*+-])([A-zА-я0-9\s]{0,})([%])";
+
+            if (type == TypeOfExpression.FORMULA)
+            {
+                //pattern = @"([A-Z]{0,}[0-9]{1,})([*+-/])([A-Z]{0,}[0-9]{1,})([%])";
+                replacement = "$1$2($1*$3/100)";
+            }
+            else
+            {
+                //pattern = @"([A-zА-я0-9]{1,})([*+-/])([A-zА-я0-9\s]{1,})([%])";
+                replacement = "$1$2($1*$3/const)";
+            }
+
+            return expressionForConvert = System.Text.RegularExpressions.Regex.Replace(expressionForConvert, pattern, replacement);
+        }
+
         public List<Marking> GetListOfMarkings()
         {
             string[] arrayOfMarking = File.ReadAllLines(Directory.GetCurrentDirectory() + @"\test\test.txt");
@@ -160,6 +196,15 @@ namespace RST
                         continue;
                     }
                 }
+            }
+
+            for (int i = 0; i < listOfMarking.Count; i++)
+            {
+                if (listOfMarking[i].SourceCell.Contains("%"))
+                    listOfMarking[i].SourceCell = ConvertExpressionWithPercent(listOfMarking[i].SourceCell, TypeOfExpression.FORMULA);
+
+                if (listOfMarking[i].SourceSheet.Contains("%"))
+                    listOfMarking[i].SourceSheet = ConvertExpressionWithPercent(listOfMarking[i].SourceSheet, TypeOfExpression.LIST_OF_SOURCES);
             }
 
             Console.WriteLine("***listOfMarking***");

@@ -29,13 +29,13 @@ namespace RST
         public string SourceCell
         {
             get { return this.sourceCell; }
-            //set { this.sourceCell = value; }
+            set { this.sourceCell = value; }
         }
 
         public string SourceSheet
         {
             get { return this.sourceSheet; }
-            //set { this.sourceSheet = value; }
+            set { this.sourceSheet = value; }
         }
 
         public Marking(string targetCell, string targetSheet, string sourceCell, string sourceSheet)
@@ -46,46 +46,5 @@ namespace RST
             this.sourceSheet = sourceSheet;
         }
 
-        //public GetMarkingTurple(string markingStringFromFile)
-        //{
-        //    //Удалять пробелы
-        //    //markingStringFromFile = markingStringFromFile.Trim();
-
-        //    //#... - комментаии
-        //    string[] stringSeparators = new string[] { ":" };
-        //    string[] cellsRangeSeparators = new string[] { "@" };
-        //    string[] partsOfMarking = markingStringFromFile.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
-
-        //    string[] targetCellSplited;
-        //    string[] sourceCellSplited;
-
-        //    if (!this.targetCell.Contains(cellsRangeSeparators[0]) && !this.sourceCell.Contains(cellsRangeSeparators[0]))
-        //    {
-        //        this.targetCell = partsOfMarking[0];
-        //        this.targetSheet = partsOfMarking[1];
-        //        this.sourceCell = partsOfMarking[2];
-        //        this.sourceSheet = partsOfMarking[3];
-        //    }
-        //    else if (this.targetCell.Contains(cellsRangeSeparators[0]) && !this.sourceCell.Contains(cellsRangeSeparators[0]))
-        //    {
-        //        targetCellSplited = this.targetCell.Split(cellsRangeSeparators, StringSplitOptions.RemoveEmptyEntries);
-        //        this.targetSheet = partsOfMarking[1];
-        //        this.sourceCell = partsOfMarking[2];
-        //        this.sourceSheet = partsOfMarking[3];
-        //    }
-        //    else if (this.targetCell.Contains(cellsRangeSeparators[0]) && this.sourceCell.Contains(cellsRangeSeparators[0]))
-        //    {
-        //        targetCellSplited = this.targetCell.Split(cellsRangeSeparators, StringSplitOptions.RemoveEmptyEntries);
-        //        this.targetSheet = partsOfMarking[1];
-        //        sourceCellSplited = this.sourceCell.Split(cellsRangeSeparators, StringSplitOptions.RemoveEmptyEntries);
-        //        this.sourceSheet = partsOfMarking[3];
-        //    }
-
-        //    //Console.WriteLine("*****************************TEST5_OF MARKING_CLASS*****************************");
-        //    //foreach(string elem in partsOfMarking)
-        //    //{
-        //    //    Console.WriteLine($"{elem} is {Array.IndexOf(partsOfMarking, elem)}");
-        //    //}
-        //}
     }
 }

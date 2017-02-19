@@ -41,7 +41,7 @@ namespace RST
         }
 
         //private
-        public enum TypeOfVariable
+        private enum TypeOfVariable
         {
             CELL = 1,
             CONST = 2,
@@ -57,7 +57,7 @@ namespace RST
         }
 
         //private non-static
-        public static TypeOfVariable[] GetTypesOfVariables(string[] variablesInFormula)
+        private TypeOfVariable[] GetTypesOfVariables(string[] variablesInFormula)
         {
             TypeOfVariable[] flag = new TypeOfVariable[variablesInFormula.Length];
 

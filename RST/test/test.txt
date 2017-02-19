@@ -3,3 +3,11 @@
 P135@P140:БПР:J5@J10:Полезный
 P135@P140:БПр:N21/6:Баланс ВО/const
 BD132:К:1000+250*2:const+const*const
+# Комментарий
+CE250:К:1000+250*2%:const+const*const%
+CE250:К:1000+M250*2%:const+Баланс ВО*const%
+CE250:К:1000+250*M252%:const+const*Баланс ВО%
+# Комментарий
+CE250:К:1000+250*coeffK1%:const+const*coeffK1%
+CE250:К:1000+M250*coeffK1%:const+Баланс ВО*coeffK1%
+CE250:К:1000+250*coeffK1%:const+const*coeffK1%

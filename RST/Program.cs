@@ -78,7 +78,7 @@ namespace RST
             ////Временный массив для хранения распарсенной формулы
             string[] variablesTemp = formula.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
 
-            MainLogic.TypeOfVariable[] typeOfVar = MainLogic.GetTypesOfVariables(variablesTemp);
+            //MainLogic.TypeOfVariable[] typeOfVar = MainLogic.GetTypesOfVariables(variablesTemp);
 
             //Console.WriteLine($"\r\n{formula}\r\n-----------\r\nElement\tType");
             for (int i = 0; i < variablesTemp.Length; i++)
