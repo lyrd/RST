@@ -1,13 +1,25 @@
-﻿BD132:К:K115/1000*K1*K3:Смета ТС/const*coeffK1*coeffK3
+﻿#BD132:К:K115/1000*K1*K3:Смета ТС/const*coeffK1*coeffK3
 # Комментарий
-P135@P140:БПР:J5@J10:Полезный
-P135@P140:БПр:N21/6:Баланс ВО/const
-BD132:К:1000+250*2:const+const*const
+#P135@P140:БПР:J5@J10:Полезный
+#P135@P140:БПр:N21/6:Баланс ВО/const
+#BD132:К:1000+250*2:const+const*const
 # Комментарий
-CE250:К:1000+250*2%:const+const*const%
-CE250:К:1000+M250*2%:const+Баланс ВО*const%
-CE250:К:1000+250*M252%:const+const*Баланс ВО%
+#CE250:К:1000+250*2%:const+const*const%
+#CE250:К:1000+M250*2%:const+Баланс ВО*const%
+#CE250:К:1000+250*M252%:const+const*Баланс ВО%
 # Комментарий
-CE250:К:1000+250*coeffK1%:const+const*coeffK1%
-CE250:К:1000+M250*coeffK1%:const+Баланс ВО*coeffK1%
-CE250:К:1000+250*coeffK1%:const+const*coeffK1%
+#CE250:К:1000+250*coeffK1%:const+const*coeffK1%
+#CE250:К:1000+M250*coeffK1%:const+Баланс ВО*coeffK1%
+#CE250:К:1000+250*coeffK1%:const+const*coeffK1%
+#test
+A1:write:A1:read
+A2:write:A2:read
+B1:write:B1:read
+B2:write:B2:read
+C1:write:C1:read
+C2:write:C2:read
+#test1
+A1:write:A1+6:read+const
+A2:write:A2+10%:read+const%
+B1:write:B1+A1%:read+read%
+B2:write:B2+B1:read+read

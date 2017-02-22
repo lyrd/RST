@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MathExpressionsParser;
+using System.IO;
 
 namespace RST
 {
@@ -12,6 +13,14 @@ namespace RST
         public MainLogic(){}
 
         private MathParser mathParser = new MathParser();
+
+        //---------------------------------------------
+        //string excelReadPath = Directory.GetCurrentDirectory() + @"\test\test_read.xlsx";
+        //string excelWritePath = Directory.GetCurrentDirectory() + @"\test\test_write.xlsx";
+
+        //Office.Excel excelRead = new Office.Excel();
+        //Office.Excel excelWrite = new Office.Excel();
+        //---------------------------------------------
 
         private enum Delta
         {
@@ -50,7 +59,7 @@ namespace RST
         }
 
         //private
-        public enum ErrorCode
+        private enum ErrorCode
         {
             UNKNOW_VARIABLE_TYPE = 1302201701,
             TRY_PARSE_FAILURE = 1302201702
@@ -107,6 +116,7 @@ namespace RST
                     //TODO: Read from Excel
                     //BUT for test this values are 1
                     values[i] = 1;
+
                 }
                 else if (typeOfVariables[i] == TypeOfVariable.COEFFICIENT)
                 {
@@ -140,7 +150,7 @@ namespace RST
             return sResult;
         }
 
-        public string TEST_MakeCalculation(string formula, string source)
+        private string TEST_MakeCalculation(string formula, string source)
         {
             //Получение имени текущего метода для вывода в логи
             string currMethodName = System.Reflection.MethodBase.GetCurrentMethod().Name;
@@ -152,6 +162,7 @@ namespace RST
 
             //Временный массив для хранения распарсенной формулы
             string[] variablesTemp = formula.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
+            string[] sourcesTemp = source.Split(stringSeparators, StringSplitOptions.RemoveEmptyEntries);
 
             //Получение типов переменных формулы
             TypeOfVariable[] typeOfVariables = GetTypesOfVariables(variablesTemp);
@@ -168,9 +179,12 @@ namespace RST
             {
                 if (typeOfVariables[i] == TypeOfVariable.CELL)
                 {
-                    //TODO: Read from Excel
-                    //BUT for test this values are 1
-                    values[i] = 1;
+                    ////TODO: Read from Excel
+                    ////BUT for test this values are 1
+                    //values[i] = 1;
+
+                //values[i]=excelRead.GetValue()
+
                 }
                 else if (typeOfVariables[i] == TypeOfVariable.COEFFICIENT)
                 {
@@ -205,7 +219,7 @@ namespace RST
         }
 
         //private
-        public string GetFormulaWithValues(StringBuilder data, string[] oldInString, double[] valuesForReplace)
+        private string GetFormulaWithValues(StringBuilder data, string[] oldInString, double[] valuesForReplace)
         {
             for (byte index = 0; index < valuesForReplace.Length; index++)
             {
@@ -216,9 +230,19 @@ namespace RST
         }
 
         //private
-        public double ConvertDecimalSeparator(string s)
+        private double ConvertDecimalSeparator(string s)
         {
             return Double.Parse(s.Replace(",", "."), System.Globalization.CultureInfo.InvariantCulture);
+        }
+
+        public void FillBalance()
+        {
+         
+        }
+
+        public void FillExcerpt()
+        {
+
         }
     }
 }

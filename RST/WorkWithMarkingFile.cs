@@ -41,15 +41,6 @@ namespace RST
             LIST_OF_SOURCES = 2
         }
 
-        //private string ConvertExpressionWithPercent(string expressionForConvert)
-        //{
-        //    //string pattern = @"([A-Z]{0,}[0-9]{1,})([*+-/])([A-Z]{0,}[0-9]{1,})([%])";
-        //    string pattern = @"([A-zА-я0-9\s]{0,})([/*+-])([A-zА-я0-9\s]{0,})([%])";
-        //    string replacement = "$1$2($1*$3/100)";
-
-        //    return expressionForConvert = System.Text.RegularExpressions.Regex.Replace(expressionForConvert, pattern, replacement);
-        //}
-
         private string ConvertExpressionWithPercent(string expressionForConvert, TypeOfExpression type)
         {
             string pattern = String.Empty;
@@ -62,7 +53,7 @@ namespace RST
                 //pattern = @"([A-Z]{0,}[0-9]{1,})([*+-/])([A-Z]{0,}[0-9]{1,})([%])";
                 replacement = "$1$2($1*$3/100)";
             }
-            else
+            else if (type == TypeOfExpression.LIST_OF_SOURCES)
             {
                 //pattern = @"([A-zА-я0-9]{1,})([*+-/])([A-zА-я0-9\s]{1,})([%])";
                 replacement = "$1$2($1*$3/const)";
